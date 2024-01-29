@@ -16,7 +16,7 @@ Gulnara Massage Studio is a massage therapy studio run by my mom. The studio off
 2. Navigate to the project directory: `cd django-massage-analytics`
 3. Create virtual environment (Windows): `python -m venv .venv`
 4. Activate virtual environment: `.venv\Scripts\activate.bat`
-5. Install required packages: `pip install -r reqirements.txt`
+5. Install required dependencies: `pip install -r reqirements.txt`
 5. Configure the PostgreSQL database connection in the settings file.
 6. Run migrations: `python manage.py migrate`
 7. Start the development server: `python manage.py runserver`
