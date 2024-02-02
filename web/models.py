@@ -3,36 +3,45 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 
 
-class Jobs(models.Model):
-    job_name = models.CharField(max_length=64)
+class Job(models.Model):
+    job_name = models.CharField(max_length=64, verbose_name="Профессия", default='безработный')
 
-
-class JobActivity(models.Model):
-    job_activity_name = models.CharField(max_length=64)
+    def __str__(self):
+        return self.job_name
 
 
 class Client(AbstractUser):
-    job = models.ForeignKey(Jobs, on_delete=models.CASCADE)
-    job_activity = models.ForeignKey(JobActivity, on_delete=models.CASCADE)
-    client_name = models.CharField(max_length=128)
-    client_phone = models.CharField(max_length=11)
-    client_age = models.IntegerField()
+    ACTIVE = 'Active'
+    PASSIVE = 'Passive'
+    HYBRID = 'Hybrid'
+    JOB_ACTIVITIES = (
+        (ACTIVE, 'Подвижная работа'),
+        (PASSIVE, 'Сидячая работа'),
+        (HYBRID, 'Смешанная работа'),
+    )
+
+    first_name = models.CharField(verbose_name="Имя")
+    last_name = models.CharField(verbose_name="Фамилия")
+    phone = models.CharField(max_length=11, verbose_name="Номер телефона")
+    age = models.IntegerField(verbose_name="Возраст")
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, verbose_name="Профессия", default=0)
+    job_activity = models.CharField(verbose_name="Характер работы", default=PASSIVE, choices=JOB_ACTIVITIES)
 
 
 User = get_user_model()
 
 
-class MassageTypes(models.Model):
-    massage_type_name = models.CharField(max_length=64)
+class MassageType(models.Model):
+    massage_type_name = models.CharField(max_length=64, verbose_name="Тип массажа")
 
 
-class Symptoms(models.Model):
-    symptom_name = models.CharField(max_length=256)
+class Symptom(models.Model):
+    symptom_name = models.CharField(max_length=256, verbose_name="Симптом")
 
 
-class MassageSessions(models.Model):
-    customer = models.ForeignKey(User, on_delete=models.CASCADE)
-    client_symptoms = models.ManyToManyField(Symptoms)
-    massage_type = models.ForeignKey(MassageTypes, on_delete=models.CASCADE)
-    session_date = models.DateField()
-    session_index = models.IntegerField()
+class MassageSession(models.Model):
+    client = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Клиент")
+    client_symptoms = models.ManyToManyField(Symptom, verbose_name="Симптомы")
+    massage_type = models.ForeignKey(MassageType, on_delete=models.CASCADE, verbose_name="Тип массажа")
+    session_date = models.DateField(verbose_name="Дата сеанса")
+    session_index = models.IntegerField(verbose_name="Номер сеанса")
