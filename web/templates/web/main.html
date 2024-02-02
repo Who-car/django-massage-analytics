@@ -1,0 +1,15 @@
+{% extends 'web/base.html' %}
+{% block content %}
+    {% if user.is_anonymous %}
+    <h1>Hello, please register!</h1>
+    <div style="text-align: right">
+        <a href="{% url 'registration' %}">Регистрация</a>
+        <a href="{% url 'auth' %}">Авторизация</a>
+    </div>
+    {% else %}
+    <h1>Hello, {{ user.first_name }}</h1>
+    <div style="text-align: right">
+        <a href="{% url 'logout' %}">Выход</a>
+    </div>
+    {% endif %}
+{% endblock %}
