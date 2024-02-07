@@ -1,13 +1,20 @@
 from datetime import datetime
-from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout, authenticate, login
-from web.forms import RegistrationForm, AuthForm
-from web.models import Client, Job
+from django.contrib.auth.decorators import user_passes_test
+from web.forms import RegistrationForm, AuthForm, SessionForm, SymptomForm, MassageTypeForm
+from web.models import Client, Job, MassageSession, Symptom, MassageType
 
 
 def main_view(request):
+    sessions = MassageSession.objects.all()
+    total_count = sessions.count()
     return render(request, 'web/main.html', {
-        "year": datetime.now().year
+        "year": datetime.now().year,
+        "sessions": sessions,
+        "total_count": total_count,
+        "form": SessionForm()
     })
 
 
@@ -17,15 +24,13 @@ def registration_view(request):
     if request.method == "POST":
         form = RegistrationForm(data=request.POST)
         if form.is_valid():
-            job_obj = Job.objects.get(job_name=form.cleaned_data["job"])
-            print(f'job_obj is {job_obj}')
             user = Client(
                 username=form.cleaned_data["phone"],
                 first_name=form.cleaned_data["first_name"],
                 last_name=form.cleaned_data["last_name"],
                 phone=form.cleaned_data["phone"],
                 age=form.cleaned_data["age"],
-                job=job_obj,
+                job=Job.objects.get(name=form.cleaned_data["job"]),
                 job_activity=form.cleaned_data["job_activity"],
             )
             user.set_password(form.cleaned_data["password"])
@@ -41,8 +46,8 @@ def auth_view(request):
     if request.method == "POST":
         form = AuthForm(data=request.POST)
         if form.is_valid():
-            user = authenticate(username=form.cleaned_data["phone"], password=form.cleaned_data["password"])
             print(form.cleaned_data)
+            user = authenticate(**form.cleaned_data)
             if user is None:
                 form.add_error(None, "Введены неверные данные")
             else:
@@ -54,3 +59,69 @@ def auth_view(request):
 def logout_view(request):
     logout(request)
     return redirect('main')
+
+
+@login_required
+def session_edit_view(request, id=None):
+    session = (
+        get_object_or_404(MassageSession, client=request.user, id=id)
+        if id is not None
+        else None
+    )
+    form = SessionForm(instance=session)
+    if request.method == "POST":
+        form = SessionForm(
+            data=request.POST,
+            files=request.FILES,
+            instance=session,
+            initial={"user": request.user},
+        )
+        if form.is_valid():
+            form.save()
+            return redirect("main")
+    return render(request, "web/session_form.html", {"form": form})
+
+
+@login_required
+def session_delete_view(request, id):
+    tag = get_object_or_404(MassageSession, user=request.user, id=id)
+    tag.delete()
+    return redirect("main")
+
+
+@login_required
+def symptoms_view(request):
+    symptoms = Symptom.objects.all()
+    form = SymptomForm()
+    if request.method == "POST":
+        form = SymptomForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("symptoms")
+    return render(request, f"web/symptoms.html", {"symptoms": symptoms, "form": form})
+
+
+@login_required
+def symptoms_delete_view(request, id):
+    symptom = get_object_or_404(Symptom, id=id)
+    symptom.delete()
+    return redirect("symptoms")
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/auth/')
+def massage_types_view(request):
+    massage_types = MassageType.objects.all()
+    form = MassageTypeForm()
+    if request.method == "POST":
+        form = MassageTypeForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("massages")
+    return render(request, f"web/massage_types.html", {"massage_types": massage_types, "form": form})
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/auth/')
+def massage_types_delete_view(request, id):
+    massage_type = get_object_or_404(MassageType, id=id)
+    massage_type.delete()
+    return redirect("massages")

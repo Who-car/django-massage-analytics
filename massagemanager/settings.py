@@ -46,6 +46,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'massagemanager.middlewares.SqlPrintingMiddleware'
 ]
 
 ROOT_URLCONF = 'massagemanager.urls'
@@ -122,3 +123,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'web.Client'
+
+AUTHENTICATION_BACKENDS = [
+    'web.backends.PhoneAuthBackend',
+    'django.contrib.auth.backends.ModelBackend'
+]
