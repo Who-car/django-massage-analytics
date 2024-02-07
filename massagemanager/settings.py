@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,7 +35,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
     'web',
+    'api'
 ]
 
 MIDDLEWARE = [
@@ -46,7 +49,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'massagemanager.middlewares.SqlPrintingMiddleware'
+    'massagemanager.middlewares.SqlPrintingMiddleware',
+    'massagemanager.middlewares.StatMiddleware'
 ]
 
 ROOT_URLCONF = 'massagemanager.urls'
@@ -80,6 +84,20 @@ DATABASES = {
         'PASSWORD': 'ab9q0rui',
         'HOST': 'localhost',
         'PORT': '5432'
+    }
+}
+
+REDIS_HOST = os.environ.get("REDIS_HOST", "127.0.0.1")
+REDIS_DB = os.environ.get("REDIS_DB", 0)
+REDIS_PORT = 6379
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
     }
 }
 
@@ -128,3 +146,12 @@ AUTHENTICATION_BACKENDS = [
     'web.backends.PhoneAuthBackend',
     'django.contrib.auth.backends.ModelBackend'
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+}
+
