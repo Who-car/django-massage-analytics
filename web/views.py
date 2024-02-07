@@ -1,21 +1,58 @@
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db.models import Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import user_passes_test
-from web.forms import RegistrationForm, AuthForm, SessionForm, SymptomForm, MassageTypeForm
+from web.forms import RegistrationForm, AuthForm, SessionForm, SymptomForm, MassageTypeForm, SessionFilterForm
 from web.models import Client, Job, MassageSession, Symptom, MassageType
+from web.services import filter_sessions
 
 
 def main_view(request):
-    sessions = MassageSession.objects.all()
+    sessions = MassageSession.objects.filter(client=request.user).order_by("-session_date")
+
+    filter_form = SessionFilterForm(request.GET)
+    filter_form.is_valid()
+    sessions = filter_sessions(sessions, filter_form.cleaned_data)
+
     total_count = sessions.count()
-    return render(request, 'web/main.html', {
-        "year": datetime.now().year,
-        "sessions": sessions,
-        "total_count": total_count,
-        "form": SessionForm()
-    })
+    sessions = (
+        sessions.prefetch_related("client_symptoms")
+        .select_related("client")
+        .annotate(symptoms_count=Count("client_symptoms"))
+    )
+    page_number = request.GET.get("page", 1)
+
+    paginator = Paginator(sessions, per_page=100)
+
+    # if request.GET.get("export") == "csv":
+    #     response = HttpResponse(
+    #         content_type="text/csv",
+    #         headers={"Content-Disposition": "attachment; filename=timeslots.csv"},
+    #     )
+    #     return export_timeslots_csv(timeslots, response)
+
+    return render(
+        request,
+        "web/main.html",
+        {
+            "sessions": paginator.get_page(page_number),
+            "form": SessionForm(),
+            "filter_form": filter_form,
+            "total_count": total_count,
+        },
+    )
+
+    # sessions = MassageSession.objects.all()
+    # total_count = sessions.count()
+    # return render(request, 'web/main.html', {
+    #     "year": datetime.now().year,
+    #     "sessions": sessions,
+    #     "total_count": total_count,
+    #     "form": SessionForm()
+    # })
 
 
 def registration_view(request):
