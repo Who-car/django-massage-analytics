@@ -1,13 +1,14 @@
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Count
+from django.db.models import Count, Max, Min
+from django.db.models.functions import TruncDate
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import user_passes_test
 from web.forms import RegistrationForm, AuthForm, SessionForm, SymptomForm, MassageTypeForm, SessionFilterForm
 from web.models import Client, Job, MassageSession, Symptom, MassageType
-from web.services import filter_sessions
+from web.services import filter_sessions, get_stat
 
 
 def main_view(request):
@@ -27,13 +28,6 @@ def main_view(request):
 
     paginator = Paginator(sessions, per_page=100)
 
-    # if request.GET.get("export") == "csv":
-    #     response = HttpResponse(
-    #         content_type="text/csv",
-    #         headers={"Content-Disposition": "attachment; filename=timeslots.csv"},
-    #     )
-    #     return export_timeslots_csv(timeslots, response)
-
     return render(
         request,
         "web/main.html",
@@ -45,14 +39,30 @@ def main_view(request):
         },
     )
 
-    # sessions = MassageSession.objects.all()
-    # total_count = sessions.count()
-    # return render(request, 'web/main.html', {
-    #     "year": datetime.now().year,
-    #     "sessions": sessions,
-    #     "total_count": total_count,
-    #     "form": SessionForm()
-    # })
+
+@login_required
+def stat_view(request):
+    return render(request, "web/stat.html", {"results": get_stat()})
+
+
+@login_required
+def analytics_view(request):
+    overall_stat = MassageSession.objects.aggregate(
+        count=Count("id"), max_date=Max("session_date"), min_date=Min("session_date")
+    )
+    days_stat = (
+        MassageSession.objects.exclude(end_date__isnull=True)
+        .annotate(date=TruncDate("session_date"))
+        .values("date")
+        .order_by("-session_date")
+    )
+
+    return render(
+        request,
+        "web/analytics.html",
+        {"overall_stat": overall_stat, "days_stat": days_stat},
+    )
+
 
 
 def registration_view(request):

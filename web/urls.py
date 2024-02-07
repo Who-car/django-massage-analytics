@@ -4,6 +4,8 @@ from web import views
 
 urlpatterns = [
     path('', views.main_view, name="main"),
+    path('stat/', views.stat_view, name="stat"),
+    path('analytics/', views.analytics_view, name="analytics"),
     path('registration/', views.registration_view, name="registration"),
     path('auth/', views.auth_view, name="auth"),
     path('logout/', views.logout_view, name="logout"),
