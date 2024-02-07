@@ -50,3 +50,22 @@ class MassageTypeForm(forms.ModelForm):
     class Meta:
         model = MassageType
         fields = ("name", "price")
+
+
+class SessionFilterForm(forms.Form):
+    date = forms.DateTimeField(
+        label="дата",
+        widget=forms.DateTimeInput(
+            attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
+        ),
+        required=False,
+    )
+    index = forms.IntegerField(
+        label="Номер сеанса",
+        required=False
+    )
+    type = forms.ModelChoiceField(
+        label="Тип массажа",
+        queryset=MassageType.objects.all(),
+        required=False
+    )

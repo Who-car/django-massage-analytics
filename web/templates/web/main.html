@@ -11,6 +11,20 @@
         <a href="{% url 'massages' %}">Виды массажей</a>
     {% endif %}
 
+    <form action="">
+        <b>Фильтры:</b><br>
+
+        {% for field in filter_form %}
+            {{ field.label }}
+            {{ field }}
+        {% endfor %}
+
+        <button>Найти</button>
+
+        <a href="?">Показать всё</a>
+    </form>
+
+
     <ul>
         {% for session in sessions %}
             <li>
@@ -30,4 +44,20 @@
             </li>
         {% endfor %}
     </ul>
+
+    всего {{ total_count }} записей. {{ sessions|length }} на этой странице.
+    <nav>
+        {% if sessions.has_previous %}
+            <a href="?page=1">в начало</a>
+            <a href="?page={{ sessions.previous_page_number }}">предыдующая страница</a>
+        {% endif %}
+
+        страница {{ sessions.number }} из {{ sessions.paginator.num_pages }}
+
+        {% if sessions.has_next %}
+            <a href="?page={{ sessions.next_page_number }}">следующая страница</a>
+            <a href="?page={{ sessions.paginator.num_pages }}">в конец</a>
+        {% endif %}
+    </nav>
+
 {% endblock %}
