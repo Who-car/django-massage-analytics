@@ -1,15 +1,33 @@
 {% extends 'web/base.html' %}
 {% block content %}
-    {% if user.is_anonymous %}
-    <h1>Hello, please register!</h1>
-    <div style="text-align: right">
-        <a href="{% url 'registration' %}">Регистрация</a>
-        <a href="{% url 'auth' %}">Авторизация</a>
-    </div>
-    {% else %}
-    <h1>Hello, {{ user.first_name }}</h1>
-    <div style="text-align: right">
-        <a href="{% url 'logout' %}">Выход</a>
-    </div>
+    <b>Записаться на сеанс</b>
+        <form action="{% url 'add_session' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button>Сохранить</button>
+        </form>
+
+    {% if user.is_superuser %}
+        <a href="{% url 'massages' %}">Виды массажей</a>
     {% endif %}
+
+    <ul>
+        {% for session in sessions %}
+            <li>
+                <b>Запись №{{ session.session_index }}</b> на {{ session.session_date }}
+                <small>
+                    {% if session.client_symptoms.all %}
+                        {% for symptom in session.client_symptoms.all %} {{ symptom.name }} {% endfor %}]
+
+                    {% endif %}
+                </small>
+                <br>
+                <small>
+                    {{ session.massage_type.name }} - {{ session.massage_type.price }}
+                    <a href="{% url 'edit_session' session.id %}">изменить</a>
+                    <a href="{% url 'delete_session' session.id %}">удалить</a>
+                </small>
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}
