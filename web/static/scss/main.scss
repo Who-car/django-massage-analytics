@@ -1,0 +1,18 @@
+//base
+@import "./base/vars";
+@import "./base/reset";
+@import "./base/base";
+
+//fonts
+@import url('https://fonts.googleapis.com/css2?family=Jura:wght@300;400;500;600;700&display=swap');
+
+//vendor
+@import "./base/vendor";
+
+//blocks
+@import "./blocks/header";
+@import "./blocks/welcome";
+@import "./blocks/about";
+@import "./blocks/agitation";
+@import "./blocks/benefit";
+@import "./blocks/services";

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <title>Gulnara Massage</title>
+</head>
+<body>
+<div class="wrapper">
+    <header class="header">
+        <div class="header__container">
+            <nav class="header__navbar">
+                <ul>
+                    <li><a href="#about">Обо мне</a></li>
+                    <li><a href="#">Кинезиология</a></li>
+                    <li><a href="#services">Услуги</a></li>
+                    {% if user.is_anonymous %}
+                        <li>
+                            <a href="{% url 'registration' %}">Регистрация</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'auth' %}">Авторизация</a>
+                        </li>
+                    {% else %}
+                        <li><a href="{% url 'sessions_view' %}">Мои сеансы</a></li>
+                        <li><a href="{% url 'add_session' %}">Записаться</a></li>
+                        <li><a href="{% url 'logout' %}">Выход</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="main">
+        <section class="welcome">
+            <div class="welcome__container">
+                <div class="welcome__text-box">
+                    <h1 class="welcome__title">Gulnara<br>Massage</h1>
+                </div>
+                <div class="welcome__image-box">
+                    <img src="{% static 'img/welcome-front-img.png' %}" class="welcome__front-image">
+                    <img src="{% static 'img/welcome-back-img.svg' %}" class="welcome__background-image">
+                    <div class="welcome__background-fill"></div>
+                </div>
+                <div class="welcome__button-box">
+                    <a href="{% url 'add_session' %}">
+                        <button class="welcome__button button">Записаться</button>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <section id="about" class="about">
+            <div class="about__container">
+                <div class="about__slider">
+                    <div class="btn-prev"><img src="{% static 'img/btn-prev.svg' %}"></div>
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide"><img src="{% static 'img/slide-1.png' %}"></div>
+                            <div class="swiper-slide"><img src="{% static 'img/slide-2.png' %}"></div>
+                            <div class="swiper-slide"><img src="{% static 'img/slide-3.png' %}"></div>
+                        </div>
+                    </div>
+                    <div class="btn-next"><img src="{% static 'img/btn-next.svg' %}"></div>
+                </div>
+            </div>
+            <div class="about__text">
+                <p>Высшее мед. образование</p>
+                <p>12+ лет опыта</p>
+                <p>Способность: физическое и ментальное восстановление массажем </p>
+            </div>
+        </section>
+        <section class="agitation">
+            <div class="agitation__container">
+                <h2 class="agitation__title">Более 1000 человек уже сходили ко мне на массаж</h2>
+                <p class="agitation__subtitle">Приходи и ты</p>
+            </div>
+        </section>
+        <section class="benefit">
+            <div class="benefit__container">
+                <h2 class="benefit__title">Массаж полезен!</h2>
+                <h3 class="benefit__subtitle">При:</h3>
+                <div class="benefit__contant">
+                    <img class="benefit__img-1" src="{% static 'img/benefit-img-1.png' %}">
+                    <hr class="benefit__line-1"/>
+                    <img class="benefit__img-2" src="{% static 'img/benefit-img-2.png' %}">
+                    <hr class="benefit__line-2"/>
+                    <img class="benefit__img-3" src="{% static 'img/benefit-img-3.png' %}">
+                    <span class="benefit__text-1">Частых стрессах</span>
+                    <span class="benefit__text-2">
+                            Болях в различных частях тела
+                        </span>
+                    <span class="benefit__text-3">
+                            Восстановлении после болезней
+                        </span>
+                </div>
+            </div>
+            <div class="benefit__description-wrapper">
+                    <span class="benefit__description">
+                        Я познакомлю Вас с Вашим телом,
+                        и каждое движение будет осознанным
+                        и доставит радость!
+                    </span>
+            </div>
+        </section>
+        <section id="services" class="services">
+            <div class="services__title-wrapper">
+                <h2 class="services__title">Виды массажей</h2>
+            </div>
+            <div class="services__container">
+                {% for massage_type in massage_types %}
+                <div class="services__contant">
+                    <div class="services__main-box">
+                        <img src="{% static 'img/services-1.jpg' %}" class="services__img">
+                        <span class="services__price">{{ massage_type.price }} руб/час</span>
+                        <button class="services__button button">Записаться</button>
+                    </div>
+                    <div class="services__text-box">
+                        <h3 class="services__text-box-title">{{ massage_type.name }}</h3>
+                        <span class="services__description">{{ massage_type.description }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="footer__container">
+            <p>Made by <a href="https://github.com/Who-car">Who-car</a>&<a href="https://github.com/BalgeetTjinder">BalgeetTjinder</a>, 2024</p>
+        </div>
+    </footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script src="{% static 'js/slider.js' %}"></script>
+</body>
+</html>
+
+

@@ -1,8 +1,6 @@
-from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Count, Max, Min
-from django.db.models.functions import TruncDate
+from django.db.models import Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import user_passes_test
@@ -12,6 +10,18 @@ from web.services import filter_sessions, get_stat
 
 
 def main_view(request):
+    massage_types = MassageType.objects.all().order_by("price")
+
+    return render(
+        request,
+        "web/main.html",
+        {
+            "massage_types": massage_types
+        },
+    )
+
+
+def sessions_view(request):
     sessions = MassageSession.objects.filter(client=request.user).order_by("-session_date")
 
     filter_form = SessionFilterForm(request.GET)
@@ -30,39 +40,14 @@ def main_view(request):
 
     return render(
         request,
-        "web/main.html",
+        "web/sessions.html",
         {
             "sessions": paginator.get_page(page_number),
             "form": SessionForm(),
             "filter_form": filter_form,
-            "total_count": total_count,
+            "total_count": total_count
         },
     )
-
-
-@login_required
-def stat_view(request):
-    return render(request, "web/stat.html", {"results": get_stat()})
-
-
-@login_required
-def analytics_view(request):
-    overall_stat = MassageSession.objects.aggregate(
-        count=Count("id"), max_date=Max("session_date"), min_date=Min("session_date")
-    )
-    days_stat = (
-        MassageSession.objects.exclude(end_date__isnull=True)
-        .annotate(date=TruncDate("session_date"))
-        .values("date")
-        .order_by("-session_date")
-    )
-
-    return render(
-        request,
-        "web/analytics.html",
-        {"overall_stat": overall_stat, "days_stat": days_stat},
-    )
-
 
 
 def registration_view(request):
@@ -93,12 +78,13 @@ def auth_view(request):
     if request.method == "POST":
         form = AuthForm(data=request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
             user = authenticate(**form.cleaned_data)
             if user is None:
                 form.add_error(None, "Введены неверные данные")
             else:
                 login(request, user)
+                # if user.is_superuser:
+                #     return redirect("admin")
                 return redirect("main")
     return render(request, "web/auth.html", {"form": form})
 
@@ -108,7 +94,7 @@ def logout_view(request):
     return redirect('main')
 
 
-@login_required
+@login_required(login_url='auth')
 def session_edit_view(request, id=None):
     session = (
         get_object_or_404(MassageSession, client=request.user, id=id)

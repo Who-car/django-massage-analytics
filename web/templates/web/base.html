@@ -1,33 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
-    <title>Massage Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <title>Gulnara Massage</title>
 </head>
 <body>
-    <h1><a href="{% url 'main' %}">Massage Manager</a></h1>
-    <nav>
-        {% if user.is_anonymous %}
-            <div style="text-align: right">
-                <a href="{% url 'registration' %}">Регистрация</a>
-                <a href="{% url 'auth' %}">Авторизация</a>
-            </div>
-        {% else %}
-            <a href="{% url 'main' %}">Сеансы</a>
-            <a href="{% url 'add_session' %}">Записаться</a>
-{#            <a href="{% url 'analytics' %}">Аналитика</a>#}
-{#            <a href="{% url 'import' %}">Импорт</a>#}
-            <a href="{% url 'symptoms' %}">Симтомы</a>
-{#            <a href="{% url 'stat' %}">Статистика</a>#}
-            <div style="text-align: right">
-                {% if not user.is_anonymous %}
-                    Вы авторизованы как <b>{{ user.username }}</b>
-                {% endif %}
-                <a href="{% url 'logout' %}">Выход</a>
-            </div>
-        {% endif %}
-    </nav>
-    <hr>
-    {% block content %}{% endblock %}
+<div class="wrapper">
+    <header class="header">
+        <div class="header__container">
+        <div class="header__logo">
+            <h1><a href="{% url 'main' %}">THE GM</a></h1>
+        </div>
+            <nav class="header__navbar">
+                <ul>
+                    <li><a href="{% url 'main' %}#about">Обо мне</a></li>
+                    <li><a href="{% url 'main' %}#">Кинезиология</a></li>
+                    <li><a href="{% url 'main' %}#services">Услуги</a></li>
+                    {% if user.is_anonymous %}
+                        <li>
+                            <a href="{% url 'registration' %}">Регистрация</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'auth' %}">Авторизация</a>
+                        </li>
+                    {% else %}
+                        <li><a href="{% url 'sessions_view' %}">Мои сеансы</a></li>
+                        <li><a href="{% url 'add_session' %}">Записаться</a></li>
+                        <li><a href="{% url 'logout' %}">Выход</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="main">
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer class="footer">
+        <div class="footer__container">
+            <p>Made by <a href="https://github.com/Who-car">Who-car</a>&<a href="https://github.com/BalgeetTjinder">BalgeetTjinder</a>, 2024</p>
+        </div>
+    </footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script src="{% static 'js/slider.js' %}"></script>
 </body>
 </html>

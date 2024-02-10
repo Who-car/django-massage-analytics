@@ -40,6 +40,7 @@ User = get_user_model()
 class MassageType(models.Model):
     name = models.CharField(max_length=64, verbose_name="Тип массажа")
     price = models.IntegerField(verbose_name="Цена", default=0)
+    description = models.CharField(verbose_name="Описание")
 
     def __str__(self):
         return f'{self.name} - {self.price}р.'

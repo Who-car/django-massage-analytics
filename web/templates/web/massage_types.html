@@ -4,10 +4,11 @@
     <ul>
         {% for massage_type in massage_types %}
             <li>
-                {{ massage_type.name }}
-                {{ massage_type.price }}
+                {{ massage_type.name }} - {{ massage_type.price }}
+                <p><small>{{ massage_type.description }}</small></p>
                 <small><a href="{% url 'massages_delete' massage_type.id %}">удалить</a></small>
             </li>
+            <br>
         {% endfor %}
     </ul>
 

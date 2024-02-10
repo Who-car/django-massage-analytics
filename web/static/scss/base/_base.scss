@@ -1,0 +1,76 @@
+body {
+    font-family: 'Jura', sans-serif;
+    background: #ECECEC;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+.wrapper {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+[class*="__container"] {
+    padding: 0px 15px;
+    max-width: 1115px;
+    margin: 0 auto;
+}
+
+.main {
+    flex: 1 1 auto;
+}
+
+.button {
+    font-family: $primary-font;
+    text-align: center;
+    display: inline-block;
+    border-radius: 10px;
+    cursor: pointer;
+    position:relative;
+    overflow:hidden;
+
+    transition: transform 0.3s ease; 
+
+    &:before {
+        content: '';
+        position: absolute;
+        height: 150px;
+        width: 30px;
+        background : #fff;
+        left: -55px;
+        top: -40px;
+        transform: rotate(37deg);
+        opacity: 0.4;
+        animation: buttonGlare 3s infinite;        
+    }
+}
+
+.button:hover {
+    transform: translateY(-5px);
+}
+
+@keyframes buttonGlare {
+    0% {
+        left: -15%;
+    }
+    30% {
+        left: 110%;
+    }
+    100% {
+        left: 110%;
+    }
+}
+
+@keyframes rotate {
+    from {
+      transform: rotate(0deg); /* начальное положение - 0 градусов поворота */
+    }
+    to {
+      transform: rotate(360deg); /* конечное положение - 360 градусов поворота (полный оборот) */
+    }
+  }

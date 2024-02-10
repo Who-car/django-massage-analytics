@@ -1,63 +1,95 @@
 {% extends 'web/base.html' %}
+{% load static %}
 {% block content %}
-    <b>Записаться на сеанс</b>
-        <form action="{% url 'add_session' %}" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button>Сохранить</button>
-        </form>
-
-    {% if user.is_superuser %}
-        <a href="{% url 'massages' %}">Виды массажей</a>
-    {% endif %}
-
-    <form action="">
-        <b>Фильтры:</b><br>
-
-        {% for field in filter_form %}
-            {{ field.label }}
-            {{ field }}
-        {% endfor %}
-
-        <button>Найти</button>
-
-        <a href="?">Показать всё</a>
-    </form>
-
-
-    <ul>
-        {% for session in sessions %}
-            <li>
-                <b>Запись №{{ session.session_index }}</b> на {{ session.session_date }}
-                <small>
-                    {% if session.client_symptoms.all %}
-                        {% for symptom in session.client_symptoms.all %} {{ symptom.name }} {% endfor %}]
-
-                    {% endif %}
-                </small>
-                <br>
-                <small>
-                    {{ session.massage_type.name }} - {{ session.massage_type.price }}
-                    <a href="{% url 'edit_session' session.id %}">изменить</a>
-                    <a href="{% url 'delete_session' session.id %}">удалить</a>
-                </small>
-            </li>
-        {% endfor %}
-    </ul>
-
-    всего {{ total_count }} записей. {{ sessions|length }} на этой странице.
-    <nav>
-        {% if sessions.has_previous %}
-            <a href="?page=1">в начало</a>
-            <a href="?page={{ sessions.previous_page_number }}">предыдующая страница</a>
-        {% endif %}
-
-        страница {{ sessions.number }} из {{ sessions.paginator.num_pages }}
-
-        {% if sessions.has_next %}
-            <a href="?page={{ sessions.next_page_number }}">следующая страница</a>
-            <a href="?page={{ sessions.paginator.num_pages }}">в конец</a>
-        {% endif %}
-    </nav>
+    <section class="welcome">
+        <div class="welcome__container">
+            <div class="welcome__text-box">
+                <h1 class="welcome__title">Gulnara<br>Massage</h1>
+            </div>
+            <div class="welcome__image-box">
+                <img src="{% static 'img/welcome-front-img.png' %}" class="welcome__front-image">
+                <img src="{% static 'img/welcome-back-img.svg' %}" class="welcome__background-image">
+                <div class="welcome__background-fill"></div>
+            </div>
+            <div class="welcome__button-box">
+                <a href="{% url 'add_session' %}">
+                    <button class="welcome__button button">Записаться</button>
+                </a>
+            </div>
+        </div>
+    </section>
+    <section id="about" class="about">
+        <div class="about__container">
+            <div class="about__slider">
+                <div class="btn-prev"><img src="{% static 'img/btn-prev.svg' %}"></div>
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><img src="{% static 'img/slide-1.png' %}"></div>
+                        <div class="swiper-slide"><img src="{% static 'img/slide-2.png' %}"></div>
+                        <div class="swiper-slide"><img src="{% static 'img/slide-3.png' %}"></div>
+                    </div>
+                </div>
+                <div class="btn-next"><img src="{% static 'img/btn-next.svg' %}"></div>
+            </div>
+        </div>
+        <div class="about__text">
+            <p>Высшее мед. образование</p>
+            <p>12+ лет опыта</p>
+            <p>Способность: физическое и ментальное восстановление массажем </p>
+        </div>
+    </section>
+    <section class="agitation">
+        <div class="agitation__container">
+            <h2 class="agitation__title">Более 1000 человек уже сходили ко мне на массаж</h2>
+            <p class="agitation__subtitle">Приходи и ты</p>
+        </div>
+    </section>
+    <section class="benefit">
+        <div class="benefit__container">
+            <h2 class="benefit__title">Массаж полезен!</h2>
+            <h3 class="benefit__subtitle">При:</h3>
+            <div class="benefit__contant">
+                <img class="benefit__img-1" src="{% static 'img/benefit-img-1.png' %}">
+                <hr class="benefit__line-1"/>
+                <img class="benefit__img-2" src="{% static 'img/benefit-img-2.png' %}">
+                <hr class="benefit__line-2"/>
+                <img class="benefit__img-3" src="{% static 'img/benefit-img-3.png' %}">
+                <span class="benefit__text-1">Частых стрессах</span>
+                <span class="benefit__text-2">
+                            Болях в различных частях тела
+                        </span>
+                <span class="benefit__text-3">
+                            Восстановлении после болезней
+                        </span>
+            </div>
+        </div>
+        <div class="benefit__description-wrapper">
+                    <span class="benefit__description">
+                        Я познакомлю Вас с Вашим телом,
+                        и каждое движение будет осознанным
+                        и доставит радость!
+                    </span>
+        </div>
+    </section>
+    <section id="services" class="services">
+        <div class="services__title-wrapper">
+            <h2 class="services__title">Виды массажей</h2>
+        </div>
+        <div class="services__container">
+            {% for massage_type in massage_types %}
+                <div class="services__contant">
+                    <div class="services__main-box">
+                        <img src="{% static 'img/services-1.jpg' %}" class="services__img">
+                        <span class="services__price">{{ massage_type.price }} руб/час</span>
+                        <button class="services__button button">Записаться</button>
+                    </div>
+                    <div class="services__text-box">
+                        <h3 class="services__text-box-title">{{ massage_type.name }}</h3>
+                        <span class="services__description">{{ massage_type.description }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
 
 {% endblock %}

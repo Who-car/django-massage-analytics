@@ -31,13 +31,28 @@ class AuthForm(forms.Form):
 
 
 class SessionForm(forms.ModelForm):
+    client_symptoms = forms.ModelMultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        queryset=Symptom.objects.all(),
+        label="Симптомы")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        print(cleaned_data)
+        return cleaned_data
+
     def save(self, commit=True):
         self.instance.client = self.initial["user"]
+        last_session = MassageSession.objects.filter(client=self.initial["user"]).last()
+        self.instance.session_index = last_session.session_index + 1 if last_session is not None else 1
         return super().save(commit)
 
     class Meta:
         model = MassageSession
-        fields = ("client_symptoms", "massage_type", "session_date", "session_index")
+        fields = ("client_symptoms", "massage_type", "session_date")
+        widgets = {
+            "session_date": forms.DateTimeInput(attrs={"type": "date"}, format="%Y-%m-%d")
+        }
 
 
 class SymptomForm(forms.ModelForm):
@@ -49,7 +64,7 @@ class SymptomForm(forms.ModelForm):
 class MassageTypeForm(forms.ModelForm):
     class Meta:
         model = MassageType
-        fields = ("name", "price")
+        fields = ("name", "price", "description")
 
 
 class SessionFilterForm(forms.Form):
