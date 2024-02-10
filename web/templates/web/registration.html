@@ -1,13 +1,24 @@
 {% extends 'web/base.html' %}
+
 {% block content %}
-    <h2>Регистрация</h2>
-    {% if is_success %}
-        <p><b>Спасибо за регистрацию!</b></p>
-    {% else %}
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button>Зарегистрироваться</button>
-        </form>
-    {% endif %}
-{% endblock %}
+<h2 class="form-registration__title">Регистрация</h2>
+{% if is_success %}
+<p><b>Спасибо за регистрацию!</b></p>
+{% else %}
+
+<form class="form-registration" method="POST" novalidate>
+  {% csrf_token %}
+  <div>
+    {% for field in form %}
+    <div class="form-group">
+      {{ field.label_tag }} <!-- Добавьте класс form-group__label к label -->
+      <div class="form-group__input">{{ field }}</div> <!-- Используйте фильтр add_class для добавления классов к полям ввода -->
+      {% if field.errors %} {% for error in field.errors %}
+      <div class="alert alert-danger form-group__error">{{ error }}</div>
+      {% endfor %} {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  <input type="submit" value="Зарегистрироваться" class="form-registration__submit" />
+</form>
+{% endif %} {% endblock %}

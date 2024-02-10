@@ -3,7 +3,11 @@
         height: 140px;
         display: flex;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: space-between;
+    }
+
+    .header__logo {
+        color: $text-blue;
     }
 
     .header__navbar {

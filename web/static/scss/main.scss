@@ -9,10 +9,13 @@
 //vendor
 @import "./base/vendor";
 
-//blocks
-@import "./blocks/header";
-@import "./blocks/welcome";
-@import "./blocks/about";
-@import "./blocks/agitation";
-@import "./blocks/benefit";
-@import "./blocks/services";
+//welcome blocks
+@import "./welcome/header";
+@import "./welcome/welcome";
+@import "./welcome/about";
+@import "./welcome/agitation";
+@import "./welcome/benefit";
+@import "./welcome/services";
+
+//forms blocks
+@import "./forms/base";

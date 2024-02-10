@@ -87,7 +87,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'massagemanager',
         'USER': 'postgres',
-        'PASSWORD': 'ab9q0rui',
+        'PASSWORD': '0000',
         'HOST': 'localhost',
         'PORT': '5432'
     }
