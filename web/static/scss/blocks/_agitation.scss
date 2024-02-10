@@ -1,0 +1,28 @@
+.agitation__container {
+    .agitation__title {
+        max-width: 1044px;
+
+        color: #0E92AD;
+        font-family: $primary-font;
+        font-size: 50px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        letter-spacing: 0.5px;
+
+        margin-top: 37px;
+    }
+    .agitation__subtitle {
+        display: block;
+        text-align: end;
+        color: #0E92AD;
+        font-family: $primary-font;
+        font-size: 30px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        letter-spacing: 0.3px;
+        margin-top: 74px;
+        margin-bottom: 41px;
+    }
+}

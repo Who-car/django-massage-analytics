@@ -24,6 +24,9 @@ SECRET_KEY = 'django-insecure-ben1pl)(_o=5=3^mv#i+ga-+ebz87w#sint_3)c3c0nhnq3io9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
+
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -50,7 +53,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'massagemanager.middlewares.SqlPrintingMiddleware',
-    'massagemanager.middlewares.StatMiddleware'
+    # 'massagemanager.middlewares.StatMiddleware'
 ]
 
 ROOT_URLCONF = 'massagemanager.urls'
@@ -58,7 +61,10 @@ ROOT_URLCONF = 'massagemanager.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['web/templates'],
+        'DIRS': [
+            'web/templates',
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,19 +93,19 @@ DATABASES = {
     }
 }
 
-REDIS_HOST = os.environ.get("REDIS_HOST", "127.0.0.1")
-REDIS_DB = os.environ.get("REDIS_DB", 0)
-REDIS_PORT = 6379
-
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
-    }
-}
+# REDIS_HOST = os.environ.get("REDIS_HOST", "127.0.0.1")
+# REDIS_DB = os.environ.get("REDIS_DB", 0)
+# REDIS_PORT = 6379
+#
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         },
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -122,9 +128,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "ru-ru"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
@@ -147,6 +153,10 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend'
 ]
 
+LOGIN_URL = "auth"
+LOGIN_REDIRECT_URL = "main"
+LOGOUT_REDIRECT_URL = "main"
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
@@ -154,4 +164,3 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
 }
-

@@ -1,0 +1,51 @@
+{% extends 'web/base.html' %}
+{% block content %}
+    <form action="">
+        <b>Фильтры:</b><br>
+
+        {% for field in filter_form %}
+            {{ field.label }}
+            {{ field }}
+        {% endfor %}
+
+        <button>Найти</button>
+
+        <a href="?">Показать всё</a>
+    </form>
+
+
+    <ul>
+        {% for session in sessions %}
+            <li>
+                <b>Запись №{{ session.session_index }}</b> на {{ session.session_date }}
+                <small>
+                    {% if session.client_symptoms.all %}
+                        {% for symptom in session.client_symptoms.all %} [{{ symptom.name }}] {% endfor %}
+
+                    {% endif %}
+                </small>
+                <br>
+                <small>
+                    {{ session.massage_type.name }} - {{ session.massage_type.price }}
+                    <a href="{% url 'edit_session' session.id %}">изменить</a>
+                    <a href="{% url 'delete_session' session.id %}">удалить</a>
+                </small>
+            </li>
+        {% endfor %}
+    </ul>
+
+    всего {{ total_count }} записей. {{ sessions|length }} на этой странице.
+    <nav>
+        {% if sessions.has_previous %}
+            <a href="?page=1">в начало</a>
+            <a href="?page={{ sessions.previous_page_number }}">предыдующая страница</a>
+        {% endif %}
+
+        страница {{ sessions.number }} из {{ sessions.paginator.num_pages }}
+
+        {% if sessions.has_next %}
+            <a href="?page={{ sessions.next_page_number }}">следующая страница</a>
+            <a href="?page={{ sessions.paginator.num_pages }}">в конец</a>
+        {% endif %}
+    </nav>
+{% endblock %}

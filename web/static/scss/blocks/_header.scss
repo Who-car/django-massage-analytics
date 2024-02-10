@@ -1,0 +1,25 @@
+.header {
+    .header__container {
+        height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .header__navbar {
+        ul {
+            display: flex;
+            li {
+                color: $text-blue;
+                font-family: $primary-font;
+                font-size: 20px;
+                font-weight: 700;
+                letter-spacing: 0.2px;
+
+                &:not(:last-child) {
+                    margin-right: 50px;
+                }
+            }
+        }
+    }
+}

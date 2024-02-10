@@ -1,12 +1,20 @@
 from rest_framework import serializers
 
-from web.models import Client, MassageSession, Symptom
+from web.models import Client, MassageSession, Symptom, Job
+
+
+class JobSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Job
+        fields = ("name",)
 
 
 class ClientSerializer(serializers.ModelSerializer):
+    job = JobSerializer(read_only=True)
+
     class Meta:
         model = Client
-        fields = ("id", "first_name", "last_name", "phone")
+        fields = ("id", "first_name", "last_name", "phone", "job", "job_activity")
 
 
 class SymptomSerializer(serializers.ModelSerializer):
